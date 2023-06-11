@@ -6,8 +6,6 @@ extends Line2D
 @export_node_path("Line2D") var _wave_force_line_path: NodePath
 @export_node_path("Line2D") var _horizontal_sections_line_path: NodePath
 
-@export_node_path("SubViewport") var _sub_viewport_path: NodePath
-
 @export_range(0, 100) var _color_transition_part_size: int
 @export_range(0.1, 1, 0.01) var _texture_clarity: float
 @export var _horizontal_sections_count: int
@@ -15,7 +13,6 @@ extends Line2D
 var _wave_direction_line: Line2D
 var _wave_force_line: Line2D
 var _horizontal_sections_line: Line2D
-var _sub_viewport: SubViewport
 
 var _cached_points: PackedVector2Array
 var _cached_color_transition_part_size: int
@@ -35,8 +32,6 @@ func _process(delta: float) -> void:
 		_wave_force_line = get_node(_wave_force_line_path)
 	if not _horizontal_sections_line:
 		_horizontal_sections_line = get_node(_horizontal_sections_line_path)
-	if not _sub_viewport:
-		_sub_viewport = get_node(_sub_viewport_path)
 	
 	if (_cached_points == points
 	and _cached_color_transition_part_size == _color_transition_part_size
