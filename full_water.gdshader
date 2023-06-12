@@ -93,6 +93,8 @@ vec4 get_collision_wave_addition_color(vec2 uv, vec2 section_point, float wave_t
 
 
 void fragment() {
+	float main_wave_influence = 1.0;
+	
 	vec4 collision_wave_addition_color = vec4(0, 0, 0, 0);
 	vec2 collision_wave_offset = vec2(0, 0);
 	float collision_wave_force = texture(_wave_force_texture, UV).b;
@@ -110,16 +112,18 @@ void fragment() {
 		
 		collision_wave_addition_color = get_collision_wave_addition_color(UV,
 			collision_wave_section_point, wave_time_offset, collision_wave_force);
+		
+		main_wave_influence = 1.0 - collision_wave_force;
 	}
 	
 	// water waves
 	vec2 wave_offset = (get_wave_offset(_wave_1_direction_degrees, _wave_texture_1, UV)
 		+ get_wave_offset(_wave_2_direction_degrees, _wave_texture_2, UV)) / 2.0;
-
+	
 	float wave_direction = radians(_wave_1_direction_degrees + _wave_2_direction_degrees) / 2.0;
 	vec2 scaled_wave_offset = wave_offset * _wave_delta - _wave_delta
 		* 0.5 * vec2(cos(wave_direction), sin(wave_direction))
-		* (1.0 - collision_wave_force);
+		* main_wave_influence;
 
 	vec4 waved_water = screen(texture(TEXTURE, UV + scaled_wave_offset + collision_wave_offset), 
 		collision_wave_addition_color);
@@ -131,7 +135,7 @@ void fragment() {
 	if (_top_ligth_active) {
 		float light_value = smoothstep(_toplight_clip_from, _toplight_clip_to,
 			wave_offset.x + wave_offset.y);
-		waved_water = screen(waved_water, light_value * vec4(1, 1, 1, 1.0 - collision_wave_force));
+		waved_water = screen(waved_water, light_value * vec4(1, 1, 1, main_wave_influence));
 	}
 
 	COLOR = waved_water;
