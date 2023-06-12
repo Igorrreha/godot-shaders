@@ -131,7 +131,7 @@ void fragment() {
 	if (_top_ligth_active) {
 		float light_value = smoothstep(_toplight_clip_from, _toplight_clip_to,
 			wave_offset.x + wave_offset.y);
-		waved_water += light_value * vec4(1, 1, 1, 1);
+		waved_water = screen(waved_water, light_value * vec4(1, 1, 1, 1.0 - collision_wave_force));
 	}
 
 	COLOR = waved_water;
