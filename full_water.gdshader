@@ -124,14 +124,17 @@ void fragment() {
 	vec2 scaled_wave_offset = wave_offset * _wave_delta - _wave_delta
 		* 0.5 * vec2(cos(wave_direction), sin(wave_direction))
 		* main_wave_influence;
+	
+	// apply deformation
+	vec4 deformed_water = texture(TEXTURE, UV + scaled_wave_offset + collision_wave_offset);
+	
+	// apply tone
+	deformed_water *= _tone_color;
+	
+	// apply collision waves addition texture
+	vec4 waved_water = screen(deformed_water, collision_wave_addition_color);
 
-	vec4 waved_water = screen(texture(TEXTURE, UV + scaled_wave_offset + collision_wave_offset), 
-		collision_wave_addition_color);
-
-	// tone
-	waved_water *= _tone_color;
-
-	// top light
+	// apply top light
 	if (_top_ligth_active) {
 		float light_value = smoothstep(_toplight_clip_from, _toplight_clip_to,
 			(wave_offset.x + wave_offset.y) * main_wave_influence);
